@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10040a">
+<title>Sana — A Thousand Roses</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --night:#10040a;
+  --wine:#260813;
+  --ruby:#a51f43;
+  --pink:#f3a5bb;
+  --gold:#e7c58d;
+  --cream:#fff4e8;
+}
+
+* { box-sizing:border-box; }
+
+html { scroll-behavior:smooth; }
+
+body {
+  margin:0;
+  min-height:100vh;
+  background:var(--night);
+  color:var(--cream);
+  font-family:Montserrat,sans-serif;
+  overflow-x:hidden;
+}
+
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-5;
+  background:
+    radial-gradient(ellipse at 50% 16%,#5b142c99,transparent 42%),
+    radial-gradient(ellipse at 8% 85%,#3c1025aa,transparent 38%),
+    radial-gradient(ellipse at 95% 70%,#4a1023aa,transparent 34%),
+    linear-gradient(145deg,#10040a,#210710 52%,#0c0308);
+}
+
+button { font:inherit; cursor:pointer; }
+
+#stars,#petals,#confetti {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+#stars { z-index:-1; }
+#petals { z-index:7; }
+#confetti { z-index:15; }
+
+.music {
+  position:fixed;
+  right:14px;
+  top:14px;
+  z-index:30;
+  padding:11px 14px;
+  border:1px solid #e7c58d66;
+  border-radius:99px;
+  color:#fff0c8;
+  background:#19070edb;
+  font-size:9px;
+  letter-spacing:1.5px;
+  backdrop-filter:blur(12px);
+}
+
+.screen {
+  display:none;
+  position:relative;
+  min-height:100svh;
+  width:100%;
+  padding:78px 18px 40px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.screen.active {
+  display:flex;
+  animation:screenIn .9s ease both;
+}
+
+@keyframes screenIn {
+  from { opacity:0; transform:translateY(18px); }
+  to { opacity:1; transform:none; }
+}
+
+.inner { width:min(100%,720px); margin:auto; }
+
+.kicker {
+  font-size:9px;
+  letter-spacing:4px;
+  line-height:1.9;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:20px;
+}
+
+.eyebrow {
+  font-size:9px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--cream);
+  margin:8px 0;
+}
+
+.eyebrow.gold { color:var(--gold); }
+
+.script {
+  font-family:"Great Vibes",cursive;
+  font-weight:400;
+  color:var(--pink);
+  text-shadow:0 0 28px #ff638233;
+}
+
+.hero-name {
+  font-size:clamp(76px,17vw,140px);
+  line-height:.9;
+  margin:15px 0;
+}
+
+.title {
+  font-family:"Cormorant Garamond",serif;
+  font-weight:300;
+  font-size:clamp(38px,8vw,68px);
+  line-height:1.05;
+  margin:10px 0;
+}
+
+.gold { color:var(--gold); }
+
+.copy {
+  max-width:510px;
+  margin:22px auto 28px;
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(20px,4.5vw,26px);
+  line-height:1.6;
+  font-weight:300;
+  color:#f5e1df;
+}
+
+.rule {
+  height:1px;
+  width:110px;
+  margin:22px auto;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:48px;
+  padding:15px 24px;
+  border:1px solid #f3d6a0;
+  background:linear-gradient(115deg,#fff0ce,#d4a15d,#f6d8a4);
+  color:#3b1020;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  font-size:9px;
+  font-weight:600;
+  box-shadow:0 8px 34px #d7a45d30;
+  transition:.25s;
+}
+
+.btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 12px 38px #d7a45d50;
+}
+
+.btn.outline {
+  background:#17060db8;
+  color:var(--pink);
+  border-color:#f3a5bb88;
+  box-shadow:none;
+  margin:8px;
+}
+
+.progress {
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin-top:28px;
+}
+
+.progress span {
+  width:27px;
+  height:2px;
+  background:#ffffff30;
+}
+
+.progress span.on {
+  background:var(--gold);
+  box-shadow:0 0 9px #e7c58d80;
+}
+
+.tiny {
+  font-size:9px;
+  color:#c8a6ad;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:26px;
+}
+
+/* Real rose photography */
+
+.photo {
+  position:relative;
+  width:min(84vw,430px);
+  height:clamp(225px,60vw,340px);
+  margin:0 auto 28px;
+  padding:8px;
+  border:1px solid #e7c58d8a;
+  background:#fff4dc12;
+  box-shadow:0 25px 80px #0007;
+}
+
+.photo img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:saturate(1.12) contrast(1.06);
+}
+
+.photo::after {
+  content:"";
+  position:absolute;
+  inset:8px;
+  background:linear-gradient(0deg,#18050b88,transparent 55%);
+  pointer-events:none;
+}
+
+.caption {
+  position:absolute;
+  bottom:20px;
+  left:10px;
+  right:10px;
+  z-index:2;
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;
+  letter-spacing:2px;
+  color:#fff0dc;
+}
+
+.rose-strip {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin:20px auto;
+}
+
+.rose-strip img {
+  width:clamp(70px,20vw,112px);
+  height:clamp(85px,24vw,132px);
+  object-fit:cover;
+  border:1px solid #e7c58d66;
+  padding:4px;
+  background:#fff1df0c;
+}
+
+.rose-strip img:nth-child(2) {
+  transform:translateY(-9px);
+}
+
+/* Birthday cake */
+
+.cake {
+  width:260px;
+  height:235px;
+  position:relative;
+  margin:12px auto 8px;
+  filter:drop-shadow(0 22px 24px #0006);
+}
+
+.plate {
+  position:absolute;
+  bottom:13px;
+  left:8px;
+  width:244px;
+  height:24px;
+  border-radius:50%;
+  background:linear-gradient(#fff1e4,#c99c99 60%,#7d4a53);
+  box-shadow:0 5px 0 #4b1c2b;
+}
+
+.bottom {
+  position:absolute;
+  bottom:31px;
+  left:42px;
+  width:176px;
+  height:75px;
+  border-radius:7px 7px 14px 14px;
+  background:linear-gradient(90deg,#67142b,#bb3857 42%,#f08091 56%,#9d2445);
+  box-shadow:inset 0 -9px #5a1027,inset 0 4px #ffb8bf;
+}
+
+.middle {
+  position:absolute;
+  bottom:98px;
+  left:53px;
+  width:154px;
+  height:38px;
+  border-radius:50% 50% 5px 5px;
+  background:linear-gradient(90deg,#e6b5a9,#fff0df,#cf8e91);
+}
+
+.icing {
+  position:absolute;
+  bottom:88px;
+  left:42px;
+  width:176px;
+  height:29px;
+  background:#ffe3d9;
+  clip-path:polygon(
+    0 0,100% 0,100% 65%,92% 100%,83% 48%,
+    74% 100%,63% 52%,53% 100%,42% 55%,
+    33% 100%,22% 52%,13% 100%,0 60%
+  );
+}
+
+.candle {
+  position:absolute;
+  left:124px;
+  bottom:132px;
+  width:11px;
+  height:47px;
+  border-radius:3px;
+  background:repeating-linear-gradient(
+    45deg,#fff1e4 0 6px,#bd3151 6px 12px
+  );
+}
+
+.flame {
+  position:absolute;
+  left:-2px;
+  top:-23px;
+  width:15px;
+  height:23px;
+  border-radius:60% 40% 55% 45%;
+  background:radial-gradient(
+    ellipse at 50% 70%,
+    #fff9c3 0 20%,#ffc24b 48%,#f35a28 76%
+  );
+  box-shadow:0 0 23px #ffb33b;
+  animation:flicker .55s infinite alternate;
+}
+
+@keyframes flicker {
+  from { transform:rotate(-5deg) scale(.94); }
+  to { transform:rotate(6deg) scale(1.08); }
+}
+
+.candle.blown .flame { display:none; }
+
+.hint {
+  max-width:420px;
+  margin:4px auto 17px;
+  color:#e8c9ce;
+  font-family:"Cormorant Garamond",serif;
+  font-size:21px;
+  line-height:1.45;
+}
+
+/* Letter */
+
+.letter-wrap {
+  max-width:575px;
+  margin:25px auto 23px;
+  padding:9px;
+  border:1px solid #e7c58d7a;
+  background:linear-gradient(135deg,#e7c58d20,#fff1e808);
+  box-shadow:0 24px 85px #0006;
+}
+
+.letter {
+  position:relative;
+  padding:31px 23px 27px;
+  background:linear-gradient(145deg,#fff5e9,#f2d6c8);
+  color:#421b27;
+}
+
+.letter::before {
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid #b77b6377;
+  pointer-events:none;
+}
+
+.letter .script {
+  font-size:46px;
+  color:#8f2745;
+  text-shadow:none;
+  margin-bottom:15px;
+}
+
+.letter p {
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(19px,4.5vw,23px);
+  line-height:1.57;
+  color:#512634;
+  margin:0 auto 15px;
+  max-width:460px;
+}
+
+.signature {
+  font-family:"Great Vibes",cursive;
+  color:#8f2745;
+  font-size:38px;
+  margin-top:17px;
+}
+
+/* Ambient animations */
+
+.star {
+  position:absolute;
+  color:#ffe5b7;
+  animation:twinkle var(--dur) ease-in-out infinite;
+  opacity:.3;
+}
+
+@keyframes twinkle {
+  0%,100% { opacity:.15; transform:scale(.7); }
+  50% { opacity:.95; transform:scale(1.25); }
+}
+
+.petal {
+  position:absolute;
+  top:-45px;
+  font-size:20px;
+  animation:fall var(--fall) linear forwards;
+  filter:drop-shadow(0 4px 7px #0006);
+}
+
+@keyframes fall {
+  to {
+    transform:translate3d(var(--drift),110vh,0) rotate(650deg);
+    opacity:.08;
+  }
+}
+
+.confetti-piece {
+  position:absolute;
+  top:-15px;
+  width:6px;
+  height:12px;
+  animation:confettiFall var(--fall) ease-in forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform:translate3d(var(--drift),110vh,0) rotate(800deg);
+    opacity:.1;
+  }
+}
+
+.toast {
+  position:fixed;
+  z-index:40;
+  left:50%;
+  bottom:22px;
+  transform:translate(-50%,18px);
+  opacity:0;
+  transition:.35s;
+  background:#210710;
+  border:1px solid #e7c58d88;
+  color:#fff0dc;
+  padding:13px 18px;
+  max-width:90vw;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.toast.show {
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:440px) {
+  .screen { padding:76px 15px 32px; }
+  .photo { height:250px; }
+  .letter-wrap { padding:6px; }
+  .letter { padding:28px 17px; }
+  .cake { transform:scale(.92); margin-top:0; margin-bottom:-4px; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="stars"></div>
+<div id="petals"></div>
+<div id="confetti"></div>
+
+<button class="music" id="musicButton" onclick="toggleMusic()">
+  ♫ &nbsp; MUSIC OFF
+</button>
+
+<!-- PAGE 1: WELCOME -->
+
+<section class="screen active" id="page1">
+ <div class="inner">
+  <div class="kicker">A secret garden made just for you</div>
+
+  <div class="photo">
+   <img
+    src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&w=1400&q=90"
+    alt="A beautiful bouquet of red roses"
+    onerror="this.onerror=null;this.src='https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1200'">
+   <div class="caption">A thousand roses, one special name</div>
+  </div>
+
+  <div class="eyebrow">Today, the stars spell</div>
+  <h1 class="script hero-name">Sana</h1>
+  <div class="eyebrow gold">Your day · Your magic · Your moment</div>
+  <div class="rule"></div>
+
+  <p class="copy">
+   Some people make the world softer, brighter, and more beautiful
+   just by being in it. Today, this little world is all yours.
+  </p>
+
+  <button class="btn" onclick="goTo(2)">
+   Open Your Surprise ✧
+  </button>
+
+  <div class="progress">
+   <span class="on"></span><span></span><span></span>
+  </div>
+
+  <div class="tiny">Made with care, especially for you</div>
+ </div>
+</section>
+
+<!-- PAGE 2: BIRTHDAY CAKE -->
+
+<section class="screen" id="page2">
+ <div class="inner">
+  <div class="kicker">A wish among roses</div>
+
+  <div class="rose-strip">
+   <img src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&w=500&q=85" alt="Red roses"
+    onerror="this.onerror=null;this.src='https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=500'">
+   <img src="https://images.unsplash.com/photo-1548586196-aa5803b77379?auto=format&fit=crop&w=500&q=85" alt="Rose bouquet"
+    onerror="this.onerror=null;this.src='https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=500'">
+   <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=500&q=85" alt="Pink roses"
+    onerror="this.onerror=null;this.src='https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=500'">
+  </div>
+
+  <h2 class="script title">Happy Birthday</h2>
+  <div class="eyebrow gold">S A N A</div>
+
+  <div class="cake">
+   <div class="plate"></div>
+   <div class="bottom"></div>
+   <div class="middle"></div>
+   <div class="icing"></div>
+   <div class="candle" id="candle">
+    <div class="flame"></div>
+   </div>
+  </div>
+
+  <p class="hint" id="cakeHint">
+   Close your eyes, make a beautiful wish, and let this little
+   candle carry it to the stars.
+  </p>
+
+  <button class="btn" id="wishButton" onclick="blowCandle()">
+   Make a Wish & Blow the Candle
+  </button>
+
+  <br>
+
+  <button class="btn outline" onclick="goTo(3)">
+   Open Your Letter ♡
+  </button>
+
+  <div class="progress">
+   <span></span><span class="on"></span><span></span>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 3: PERSONAL LETTER -->
+
+<section class="screen" id="page3">
+ <div class="inner">
+  <div class="kicker">A little letter from the heart</div>
+
+  <h2 class="script title">Dear Sana</h2>
+
+  <div class="letter-wrap">
+   <div class="letter">
+    <div class="script">On your special day…</div>
+
+    <p>
+     May your life be filled with the kind of happiness that stays,
+     the kind of love that feels gentle, and the kind of memories
+     that make you smile long after the moment has passed.
+    </p>
+
+    <p>
+     May your dreams find their way to you, may your heart always
+     have a reason to hope, and may every new chapter be more
+     beautiful than the last.
+    </p>
+
+    <p>
+     May today remind you how precious you are, how much beauty
+     you bring into the world, and how many wonderful moments
+     are still waiting for you.
+    </p>
+
+    <div class="rule"></div>
+
+    <div class="script" style="font-size:40px">
+     Keep blooming, beautiful soul.
+    </div>
+
+    <div class="signature">Happy Birthday, Sana 🌹</div>
+   </div>
+  </div>
+
+  <button class="btn" onclick="finalSurprise()">
+   One Last Little Surprise ✦
+  </button>
+
+  <br>
+
+  <button class="btn outline" onclick="goTo(1)">
+   Start the Magic Again
+  </button>
+
+  <div class="progress">
+   <span></span><span></span><span class="on"></span>
+  </div>
+
+  <div class="tiny">A thousand roses could never say it all</div>
+ </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* Twinkling golden stars */
+
+const stars = document.getElementById("stars");
+
+for (let i = 0; i < 65; i++) {
+  const star = document.createElement("span");
+
+  star.className = "star";
+  star.textContent = Math.random() > 0.5 ? "✦" : "·";
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
+  star.style.fontSize = (7 + Math.random() * 13) + "px";
+  star.style.setProperty("--dur", (2.5 + Math.random() * 4) + "s");
+  star.style.animationDelay = Math.random() * 4 + "s";
+
+  stars.appendChild(star);
+}
+
+/* Falling rose petals */
+
+let petalTimer = null;
+
+function startPetals() {
+  if (petalTimer) return;
+
+  petalTimer = setInterval(() => {
+    const petal = document.createElement("span");
+
+    petal.className = "petal";
+    petal.textContent = ["🌹", "🌸", "❀", "♥"][
+      Math.floor(Math.random() * 4)
+    ];
+
+    petal.style.left = Math.random() * 100 + "vw";
+    petal.style.setProperty(
+      "--drift",
+      (Math.random() * 190 - 95) + "px"
+    );
+    petal.style.setProperty(
+      "--fall",
+      (7 + Math.random() * 8) + "s"
+    );
+
+    document.getElementById("petals").appendChild(petal);
+
+    setTimeout(() => petal.remove(), 16000);
+  }, 750);
+}
+
+startPetals();
+
+/* Page navigation */
+
+function goTo(number) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  document.getElementById("page" + number).classList.add("active");
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (number === 2) resetCandle();
+  if (number === 3) confetti(28);
+}
+
+/* Birthday candle */
+
+let candleBlown = false;
+
+function resetCandle() {
+  candleBlown = false;
+
+  document.getElementById("candle").classList.remove("blown");
+
+  document.getElementById("cakeHint").textContent =
+    "Close your eyes, make a beautiful wish, and let this little candle carry it to the stars.";
+
+  document.getElementById("wishButton").textContent =
+    "Make a Wish & Blow the Candle";
+}
+
+function blowCandle() {
+  const candle = document.getElementById("candle");
+  const hint = document.getElementById("cakeHint");
+  const button = document.getElementById("wishButton");
+
+  if (!candleBlown) {
+    candleBlown = true;
+    candle.classList.add("blown");
+
+    hint.textContent =
+      "May that wish find its way to you, Sana. You deserve beautiful things. ✨";
+
+    button.textContent = "Light the Candle Again";
+
+    confetti(100);
+    chime();
+    showToast("A little wish is on its way to the stars ✨");
+  } else {
+    resetCandle();
+  }
+}
+
+/* Falling golden and pink confetti */
+
+function confetti(amount = 80) {
+  const layer = document.getElementById("confetti");
+
+  const colors = [
+    "#e7c58d",
+    "#f3a5bb",
+    "#fff0c8",
+    "#b72c4b",
+    "#fff4e8"
+  ];
+
+  for (let i = 0; i < amount; i++) {
+    const piece = document.createElement("span");
+
+    piece.className = "confetti-piece";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    piece.style.setProperty(
+      "--drift",
+      (Math.random() * 220 - 110) + "px"
+    );
+
+    piece.style.setProperty(
+      "--fall",
+      (2.2 + Math.random() * 2.8) + "s"
+    );
+
+    layer.appendChild(piece);
+
+    setTimeout(() => piece.remove(), 5500);
+  }
+}
+
+/* Final birthday surprise */
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => toast.classList.remove("show"), 3500);
+}
+
+function finalSurprise() {
+  confetti(150);
+  chime();
+
+  showToast(
+    "Happy Birthday, Sana. May your year bloom beautifully. 🌹"
+  );
+}
+
+/* Original gentle melody generated by Web Audio */
+
+let audioContext = null;
+let musicEnabled = false;
+let melodyTimer = null;
+let noteIndex = 0;
+
+const melody = [
+  392, 523.25, 659.25, 523.25,
+  440, 587.33, 698.46, 587.33,
+  392, 523.25, 659.25, 783.99,
+  698.46, 659.25, 523.25, 440
+];
+
+function getAudio() {
+  if (!audioContext) {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      showToast("Audio is not supported by this browser.");
+      return null;
+    }
+
+    audioContext = new AudioContextClass();
+  }
+
+  return audioContext;
+}
+
+function playNote(frequency, duration = 0.65) {
+  const ctx = getAudio();
+  if (!ctx) return;
+
+  if (ctx.state === "suspended") ctx.resume();
+
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.04,
+    ctx.currentTime + 0.05
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    ctx.currentTime + duration
+  );
+
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+
+  oscillator.start();
+  oscillator.stop(ctx.currentTime + duration + 0.04);
+}
+
+function chime() {
+  [659.25, 783.99, 987.77].forEach((frequency, index) => {
+    setTimeout(() => playNote(frequency, 0.75), index * 190);
+  });
+}
+
+function playMelody() {
+  if (!musicEnabled) return;
+
+  playNote(melody[noteIndex++ % melody.length], 0.7);
+
+  melodyTimer = setTimeout(playMelody, 760);
+}
+
+function toggleMusic() {
+  const button = document.getElementById("musicButton");
+
+  if (musicEnabled) {
+    musicEnabled = false;
+    clearTimeout(melodyTimer);
+    button.innerHTML = "♫ &nbsp; MUSIC OFF";
+  } else {
+    const ctx = getAudio();
+    if (!ctx) return;
+
+    ctx.resume().then(() => {
+      musicEnabled = true;
+      button.innerHTML = "♫ &nbsp; MUSIC ON";
+      playMelody();
+    });
+  }
+}
+</script>
+</body>
+</html>
